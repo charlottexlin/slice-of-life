@@ -12,6 +12,14 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JComboBox;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Window {
 
@@ -27,8 +35,8 @@ public class Window {
 	 * 3: set goals
 	 */
 	
-	// Pie charts
-	private Slice[] today_slices = {new Slice(10, Color.BLUE), new Slice(20, Color.RED), new Slice(30, Color.PINK)};
+	// Pie charts - set initial values
+	private Slice[] today_slices = {new Slice(1, Color.WHITE)};
 	private Slice[] goal_slices = {new Slice(20, Color.BLUE), new Slice(30, Color.RED), new Slice(10, Color.PINK)};
 
 	/**
@@ -73,24 +81,28 @@ public class Window {
 
 		// "Today" navigation button TODO
 		JLabel navigate_today = new JLabel("Today");
+		navigate_today.setBackground(Color.GRAY);
+		navigate_today.setOpaque(true);
 		navigate_today.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				show_page(0);
 			}
 		});
-		navigate_today.setBounds(70, 140, 190, 50);
+		navigate_today.setBounds(70, 175, 190, 40);
 		frame.getContentPane().add(navigate_today);
 		
 		// "Goals" navigation button
 		JLabel navigate_goals = new JLabel("Goals");
+		navigate_goals.setBackground(Color.GRAY);
+		navigate_goals.setOpaque(true);
 		navigate_goals.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				show_page(2);
 			}
 		});
-		navigate_goals.setBounds(280, 140, 190, 50);
+		navigate_goals.setBounds(280, 175, 190, 40);
 		frame.getContentPane().add(navigate_goals);
 		
 		// Initialize all pages of app, and hide all except today page
@@ -103,7 +115,7 @@ public class Window {
 			frame.getContentPane().add(pages[i]);
 		}
 		
-		pages[1].setVisible(false);
+		show_page(0);
 				
 	}
 	
@@ -117,18 +129,20 @@ public class Window {
 		
 		// Pie chart
 		PieChart chart = new PieChart(today_slices, chart_area);
-		chart.setBounds(0, 21, 534, 661);
+		chart.setBounds(0, 30, 534, 661);
 		panel.add(chart);
 		
 		// Enter a slice button
 		JLabel enter_button = new JLabel("enter a slice");
+		enter_button.setBackground(Color.GRAY);
+		enter_button.setOpaque(true);
 		enter_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				show_page(1);
 			}
 		});
-		enter_button.setBounds(264, 574, 250, 60);
+		enter_button.setBounds(142, 585, 250, 60);
 		panel.add(enter_button);
 		
 		// Background image
@@ -148,16 +162,78 @@ public class Window {
 		panel.setBounds(0, 0, 534, 661);
 		panel.setLayout(null);
 		
-		JLabel title_label = new JLabel("enter a slice");
-		title_label.setFont(new Font("Montserrat Light", Font.PLAIN, 46));
-		title_label.setHorizontalAlignment(SwingConstants.CENTER);
-		title_label.setBounds(105, 200, 324, 49);
+		// Title text: "enter a slice"
+		JLabel title_label = new JLabel(image.enterslice_text);
+		title_label.setBounds(105, 270, 324, 50);
 		panel.add(title_label);
 		
+		// Text: "category"
+		JLabel text1 = new JLabel("category:");
+		text1.setBackground(Color.GRAY);
+		text1.setOpaque(true);
+		text1.setBounds(80, 350, 180, 50);
+		panel.add(text1);
+		
+		// Combo box: user can enter category for this slice
+		JComboBox<String> category_box = new JComboBox<String>();
+		category_box.addItem("Fitness");
+		category_box.addItem("Study");
+		category_box.addItem("Rest");
+		category_box.addItem("Other");
+		category_box.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				System.out.println("hey lol"); // TODO
+			}
+		});
+		category_box.setBounds(270, 357, 180, 37);
+		panel.add(category_box);
+		
+		// Text: "# of hours"
+		JLabel text2 = new JLabel("# of hours:");
+		text2.setBackground(Color.GRAY);
+		text2.setOpaque(true);
+		text2.setBounds(80, 420, 180, 50);
+		panel.add(text2);
+		
+		// Typing field: user can enter # of hours
+		JTextField hours_field = new JTextField();
+		hours_field.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// ensure entered value is a number
+				String str = hours_field.getText();
+				try {
+				    int num_hours = Integer.parseInt(str);
+				} catch (NumberFormatException number_format_e) {
+					JOptionPane.showMessageDialog(frame, "# of hours must be a number.");
+				}
+				
+				// update pie chart value based on the entered value
+				// TODO
+			}
+		});
+		hours_field.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		hours_field.setBounds(270, 427, 180, 37);
+		panel.add(hours_field);
+		hours_field.setColumns(10);
+		
+		
+		// Enter button
+		JLabel enter_button = new JLabel("enter");
+		enter_button.setBackground(Color.GRAY);
+		enter_button.setOpaque(true);
+		enter_button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO updates your stats
+				show_page(0);
+			}
+		});
+		enter_button.setBounds(142, 510, 250, 60);
+		panel.add(enter_button);
+		
 		// Background image
-		JLabel background = new JLabel();
+		JLabel background = new JLabel(image.bg);
 		background.setBounds(0, 0, 550, 700);
-		background.setIcon(image.bg);
 		panel.add(background);
 		
 		return panel;
@@ -173,24 +249,25 @@ public class Window {
 		
 		// Pie chart
 		PieChart chart = new PieChart(goal_slices, chart_area);
-		chart.setBounds(0, 21, 534, 661);
+		chart.setBounds(0, 30, 534, 661);
 		panel.add(chart);
 		
 		// Set goals button
 		JLabel set_button = new JLabel("set goals");
+		set_button.setBackground(Color.GRAY);
+		set_button.setOpaque(true);
 		set_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				show_page(3);
 			}
 		});
-		set_button.setBounds(264, 574, 250, 60);
+		set_button.setBounds(142, 585, 250, 60);
 		panel.add(set_button);
 
 		// Background image
-		JLabel background = new JLabel();
+		JLabel background = new JLabel(image.bg);
 		background.setBounds(0, 0, 550, 700);
-		background.setIcon(image.bg);
 		panel.add(background);
 				
 		return panel;
@@ -204,16 +281,14 @@ public class Window {
 		panel.setBounds(0, 0, 534, 661);
 		panel.setLayout(null);
 		
-		JLabel title_label = new JLabel("set your goals");
-		title_label.setFont(new Font("Montserrat Light", Font.PLAIN, 46));
-		title_label.setHorizontalAlignment(SwingConstants.CENTER);
-		title_label.setBounds(105, 200, 324, 49);
+		// Title text: "set your goals"
+		JLabel title_label = new JLabel(image.setgoals_text);
+		title_label.setBounds(105, 230, 324, 50);
 		panel.add(title_label);
 		
 		// Background image
-		JLabel background = new JLabel();
+		JLabel background = new JLabel(image.bg);
 		background.setBounds(0, 0, 550, 700);
-		background.setIcon(image.bg);
 		panel.add(background);
 		
 		return panel;
