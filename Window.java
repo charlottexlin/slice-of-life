@@ -36,8 +36,8 @@ public class Window {
 	private Slice goal_fitness, goal_study, goal_work, goal_sleep, goal_selfcare, goal_hobbies, goal_social, goal_chores, goal_other;
 	
 	// Slice colors
-	private Color fitness_color = Color.BLUE, study_color = Color.GREEN, work_color = Color.RED, sleep_color = Color.PINK, selfcare_color = Color.BLACK,
-			hobbies_color = Color.ORANGE, social_color = Color.YELLOW, chores_color = Color.CYAN, other_color = Color.WHITE;
+	private Color fitness_color = Color.BLUE, study_color = Color.GREEN, work_color = Color.RED, sleep_color = Color.PINK, selfcare_color = Color.GRAY,
+			hobbies_color = Color.ORANGE, social_color = Color.YELLOW, chores_color = Color.CYAN, other_color_1 = Color.WHITE, other_color_2 = Color.LIGHT_GRAY;
 
 	/**
 	 * Launch the application.
@@ -78,7 +78,7 @@ public class Window {
 		today_hobbies = new Slice(0, hobbies_color);
 		today_social = new Slice(0, social_color);
 		today_chores = new Slice(0, chores_color);
-		today_other = new Slice(24, other_color);
+		today_other = new Slice(24, other_color_1);
 		
 		goal_fitness = new Slice(0, fitness_color);
 		goal_study = new Slice(0, study_color);
@@ -88,7 +88,7 @@ public class Window {
 		goal_hobbies = new Slice(0, hobbies_color);
 		goal_social = new Slice(0, social_color);
 		goal_chores = new Slice(0, chores_color);
-		goal_other = new Slice(24, other_color);
+		goal_other = new Slice(24, other_color_2);
 		
 		today_slices.add(today_fitness);
 		today_slices.add(today_study);
@@ -145,9 +145,7 @@ public class Window {
 	 */
 	private JPanel init_today_page() {
 		// enter a slice button
-		JLabel enter_button = new JLabel("enter a slice");
-		enter_button.setBackground(Color.GRAY);
-		enter_button.setOpaque(true);
+		JLabel enter_button = new JLabel(image.enter_button_img);
 		
 		return init_chart_page(today_slices, enter_button, 1, 1);
 	}
@@ -159,9 +157,7 @@ public class Window {
 	 */
 	private JPanel init_goals_page() {
 		// set goals button
-		JLabel enter_button = new JLabel("set goals");
-		enter_button.setBackground(Color.GRAY);
-		enter_button.setOpaque(true);
+		JLabel enter_button = new JLabel(image.set_goals_button_img);
 		
 		return init_chart_page(goal_slices, enter_button, 3, 3);
 	}
@@ -190,9 +186,7 @@ public class Window {
 		panel.add(chart);
 		
 		// Check in button
-		JLabel checkin_button = new JLabel("check in");
-		checkin_button.setBackground(Color.GRAY);
-		checkin_button.setOpaque(true);
+		JLabel checkin_button = new JLabel(image.checkin_button_img);
 		checkin_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -213,9 +207,7 @@ public class Window {
 		panel.add(update_button);
 		
 		// Reset slices button
-		JLabel reset_button = new JLabel("reset");
-		reset_button.setBackground(Color.GRAY);
-		reset_button.setOpaque(true);
+		JLabel reset_button = new JLabel(image.reset_button_img);
 		reset_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -245,9 +237,7 @@ public class Window {
 	 */
 	private JPanel init_enter_new_slice() {
 		JLabel title_label = new JLabel(image.enterslice_text);
-		JLabel enter_button = new JLabel("enter");
-		enter_button.setBackground(Color.GRAY);
-		enter_button.setOpaque(true);
+		JLabel enter_button = new JLabel(image.enter_button_img);
 		
 		return init_user_entry(title_label, enter_button, today_slices, 0);
 	}
@@ -259,9 +249,7 @@ public class Window {
 	 */
 	private JPanel init_set_goals() {
 		JLabel title_label = new JLabel(image.setgoals_text);
-		JLabel enter_button = new JLabel("set goal");
-		enter_button.setBackground(Color.GRAY);
-		enter_button.setOpaque(true);
+		JLabel enter_button = new JLabel(image.set_goals_button_img);
 		
 		return init_user_entry(title_label, enter_button, goal_slices, 2);		
 	}
@@ -289,9 +277,7 @@ public class Window {
 		panel.add(title_label);
 		
 		// Text: "category"
-		JLabel text1 = new JLabel("category:");
-		text1.setBackground(Color.GRAY);
-		text1.setOpaque(true);
+		JLabel text1 = new JLabel(image.category_text);
 		text1.setBounds(80, 350, 180, 50);
 		panel.add(text1);
 		
@@ -309,9 +295,7 @@ public class Window {
 		panel.add(category_box);
 		
 		// Text: "# of hours"
-		JLabel text2 = new JLabel("# of hours:");
-		text2.setBackground(Color.GRAY);
-		text2.setOpaque(true);
+		JLabel text2 = new JLabel(image.numhours_text);
 		text2.setBounds(80, 420, 180, 50);
 		panel.add(text2);
 		
@@ -389,29 +373,25 @@ public class Window {
 	 */
 	private void addNavigationButtons(JPanel panel) {
 		// "Today" navigation button
-		JLabel navigate_today = new JLabel("Today");
-		navigate_today.setBackground(Color.GRAY);
-		navigate_today.setOpaque(true);
+		JLabel navigate_today = new JLabel(image.today_button);
 		navigate_today.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				show_page(0);
 			}
 		});
-		navigate_today.setBounds(70, 175, 190, 40);
+		navigate_today.setBounds(45, 180, 210, 50);
 		panel.add(navigate_today);
 		
 		// "Goals" navigation button
-		JLabel navigate_goals = new JLabel("Goals");
-		navigate_goals.setBackground(Color.GRAY);
-		navigate_goals.setOpaque(true);
+		JLabel navigate_goals = new JLabel(image.goals_button);
 		navigate_goals.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				show_page(2);
 			}
 		});
-		navigate_goals.setBounds(280, 175, 190, 40);
+		navigate_goals.setBounds(285, 180, 210, 50);
 		panel.add(navigate_goals);
 	}
 	
