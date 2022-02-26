@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+
 import javax.swing.JComponent;
 /**
  * A GUI component that is a pie chart, used to display daily slices.
@@ -22,8 +24,8 @@ public class PieChart extends JComponent {
 	 * 
 	 * @param slices array of slices to include in the pie chart
 	 */
-	public PieChart(Slice[] slices, Rectangle size) {
-		this.slices = slices;
+	public PieChart(ArrayList<Slice> slices, Rectangle size) {
+		this.slices = slices.toArray(new Slice[0]);
 		this.size = size;
 	}
 	
@@ -74,12 +76,12 @@ class Slice {
 	}
 	
 	/**
-	 * Update the value of this slice.
+	 * Update the value of this slice by adding to it.
 	 * 
-	 * @param value new value to set this slice to
+	 * @param value amount to increase this slice's value by (negative value to decrease)
 	 */
 	public void updateValue(double value) {
-		this.value = value;
+		this.value += value;
 	}
 	
 	/**

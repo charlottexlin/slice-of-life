@@ -11,18 +11,9 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
-import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 public class Window {
 
@@ -151,7 +142,6 @@ public class Window {
 		}
 		
 		show_page(0);
-				
 	}
 	
 	/**
@@ -161,11 +151,6 @@ public class Window {
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 534, 661);
 		panel.setLayout(null);
-		
-		// Pie chart
-		today_chart = new PieChart(today_slices.toArray(new Slice[4]), chart_area);
-		today_chart.setBounds(0, 30, 534, 661);
-		panel.add(today_chart);
 		
 		// Enter a slice button
 		JLabel enter_button = new JLabel("enter a slice");
@@ -179,6 +164,11 @@ public class Window {
 		});
 		enter_button.setBounds(142, 585, 250, 60);
 		panel.add(enter_button);
+		
+		// Pie chart
+		today_chart = new PieChart(today_slices, chart_area);
+		today_chart.setBounds(0, 30, 534, 661);
+		panel.add(today_chart);
 		
 		// Background image
 		JLabel background = new JLabel();
@@ -248,36 +238,47 @@ public class Window {
 				try {
 				    num_hours = Integer.parseInt(str);
 				} catch (NumberFormatException number_format_e) {
-					JOptionPane.showMessageDialog(frame, "# of hours must be a number.");
-				}
-				
-				// save current list separately in case we need to revert
-				ArrayList<Slice> previous_slices = new ArrayList<Slice>();
-				for (int i = 0; i < today_slices.size(); i++) {
-					Slice old = new Slice(today_slices.get(i).getValue(), today_slices.get(i).getColor());
-					previous_slices.add(old);
+					JOptionPane.showMessageDialog(frame, "Hours must be a number.");
 				}
 				
 				// update pie chart based on value entered
 				switch (category) {
 				case "Fitness":
 					today_fitness.updateValue(num_hours);
-					today_other.updateValue(today_other.getValue() - num_hours);
+					today_other.updateValue(-num_hours);
+					
+					// show error if entered over 24 hours
+					if (!checkSliceList(today_slices)) {
+						today_fitness.updateValue(-num_hours);
+						today_other.updateValue(num_hours);
+						JOptionPane.showMessageDialog(frame, "You've entered over 24 hours!");
+					}
+					
 					break;
 				case "Study":
 					today_study.updateValue(num_hours);
-					today_other.updateValue(today_other.getValue() - num_hours);
+					today_other.updateValue(-num_hours);
+					
+					// show error if entered over 24 hours
+					if (!checkSliceList(today_slices)) {
+						today_study.updateValue(-num_hours);
+						today_other.updateValue(num_hours);
+						JOptionPane.showMessageDialog(frame, "You've entered over 24 hours!");
+					}
+					
 					break;
 				case "Rest":
 					today_rest.updateValue(num_hours);
-					today_other.updateValue(today_other.getValue() - num_hours);
+					today_other.updateValue(-num_hours);
+					
+					// show error if entered over 24 hours
+					if (!checkSliceList(today_slices)) {
+						today_rest.updateValue(-num_hours);
+						today_other.updateValue(num_hours);
+						JOptionPane.showMessageDialog(frame, "You've entered over 24 hours!");
+					}
+					
 					break;
-				}
-
-				// show error and revert if this adds up to over 24 hours
-				if (!checkSliceList(today_slices)) {
-					today_slices = previous_slices;
-					JOptionPane.showMessageDialog(frame, "You've entered over 24 hours!");
 				}
 					
 				// go back to today page
@@ -304,7 +305,7 @@ public class Window {
 		panel.setLayout(null);
 		
 		// Pie chart
-		goal_chart = new PieChart(goal_slices.toArray(new Slice[0]), chart_area);
+		goal_chart = new PieChart(goal_slices, chart_area);
 		goal_chart.setBounds(0, 30, 534, 661);
 		panel.add(goal_chart);
 		
@@ -361,6 +362,8 @@ public class Window {
 			if (i != page_to_show)
 				pages[i].setVisible(false);
 		}
+		
+		today_chart = new PieChart(today_slices, chart_area);
 	}
 	
 	/**
