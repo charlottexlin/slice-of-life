@@ -72,4 +72,40 @@ class Slice {
 		  this.value = value;
 	      this.color = color;
 	}
+	
+	/**
+	 * Update the value of this slice.
+	 * 
+	 * @param value new value to set this slice to
+	 */
+	public void updateValue(double value) {
+		this.value = value;
+	}
+	
+	/**
+	 * Return the value of this slice.
+	 * 
+	 * @return value of this slice
+	 */
+	public double getValue() {
+		return value;
+	}
+	
+	/**
+	 * Return the color of this slice.
+	 * 
+	 * @return color of this slice
+	 */
+	public Color getColor() {
+		return color;
+	}
+	
+	/**
+	 * Returns a string version of this slice, for debugging purposes.
+	 * 
+	 * @return a string representation of this slice.
+	 */
+	public String toString() {
+		return this.value + " " + this.color;
+	}
 }

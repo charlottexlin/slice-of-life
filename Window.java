@@ -6,20 +6,23 @@ import java.awt.Rectangle;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JTextField;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class Window {
 
@@ -35,9 +38,16 @@ public class Window {
 	 * 3: set goals
 	 */
 	
-	// Pie charts - set initial values
-	private Slice[] today_slices = {new Slice(1, Color.WHITE)};
-	private Slice[] goal_slices = {new Slice(20, Color.BLUE), new Slice(30, Color.RED), new Slice(10, Color.PINK)};
+	// Pie charts and slices
+	private PieChart today_chart;
+	private PieChart goal_chart;
+	private ArrayList<Slice> today_slices;
+	private ArrayList<Slice> goal_slices;
+	private Slice today_fitness, today_study, today_rest, today_other;
+	private Slice goal_fitness, goal_study, goal_rest, goal_other;
+	
+	// Slice colors
+	private Color fitness_color = Color.BLUE, study_color = Color.GREEN, rest_color = Color.PINK, other_color = Color.WHITE;
 
 	/**
 	 * Launch the application.
@@ -64,6 +74,31 @@ public class Window {
 		
 		// Set area for pie chart to be in
 		chart_area = new Rectangle(100,200,340,340);
+		
+		// Initialize pie chart slice lists
+		today_slices = new ArrayList<Slice>();
+		goal_slices = new ArrayList<Slice>();
+		
+		// Set initial values for pie chart slices
+		today_fitness = new Slice(0, fitness_color);
+		today_study = new Slice(0, study_color);
+		today_rest = new Slice(0, rest_color);
+		today_other = new Slice(24, other_color);
+		
+		goal_fitness = new Slice(3, fitness_color);
+		goal_study = new Slice(11, study_color);
+		goal_rest = new Slice(9, rest_color);
+		goal_other = new Slice(1, other_color);
+		
+		today_slices.add(today_fitness);
+		today_slices.add(today_study);
+		today_slices.add(today_rest);
+		today_slices.add(today_other);
+		
+		goal_slices.add(goal_fitness);
+		goal_slices.add(goal_study);
+		goal_slices.add(goal_rest);
+		goal_slices.add(goal_other);
 		
 		// Initialize GUI
 		initialize();
@@ -128,9 +163,9 @@ public class Window {
 		panel.setLayout(null);
 		
 		// Pie chart
-		PieChart chart = new PieChart(today_slices, chart_area);
-		chart.setBounds(0, 30, 534, 661);
-		panel.add(chart);
+		today_chart = new PieChart(today_slices.toArray(new Slice[4]), chart_area);
+		today_chart.setBounds(0, 30, 534, 661);
+		panel.add(today_chart);
 		
 		// Enter a slice button
 		JLabel enter_button = new JLabel("enter a slice");
@@ -179,12 +214,6 @@ public class Window {
 		category_box.addItem("Fitness");
 		category_box.addItem("Study");
 		category_box.addItem("Rest");
-		category_box.addItem("Other");
-		category_box.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				System.out.println("hey lol"); // TODO
-			}
-		});
 		category_box.setBounds(270, 357, 180, 37);
 		panel.add(category_box);
 		
@@ -197,34 +226,61 @@ public class Window {
 		
 		// Typing field: user can enter # of hours
 		JTextField hours_field = new JTextField();
-		hours_field.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// ensure entered value is a number
-				String str = hours_field.getText();
-				try {
-				    int num_hours = Integer.parseInt(str);
-				} catch (NumberFormatException number_format_e) {
-					JOptionPane.showMessageDialog(frame, "# of hours must be a number.");
-				}
-				
-				// update pie chart value based on the entered value
-				// TODO
-			}
-		});
-		hours_field.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		
 		hours_field.setBounds(270, 427, 180, 37);
 		panel.add(hours_field);
 		hours_field.setColumns(10);
 		
 		
-		// Enter button
+		// Enter button - retrieves information from the fields and submits it
 		JLabel enter_button = new JLabel("enter");
 		enter_button.setBackground(Color.GRAY);
 		enter_button.setOpaque(true);
 		enter_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// TODO updates your stats
+				// get category from combo box
+				String category = category_box.getSelectedItem().toString();
+				
+				// get value from hours field
+				String str = hours_field.getText();
+				int num_hours = 0;
+				try {
+				    num_hours = Integer.parseInt(str);
+				} catch (NumberFormatException number_format_e) {
+					JOptionPane.showMessageDialog(frame, "# of hours must be a number.");
+				}
+				
+				// save current list separately in case we need to revert
+				ArrayList<Slice> previous_slices = new ArrayList<Slice>();
+				for (int i = 0; i < today_slices.size(); i++) {
+					Slice old = new Slice(today_slices.get(i).getValue(), today_slices.get(i).getColor());
+					previous_slices.add(old);
+				}
+				
+				// update pie chart based on value entered
+				switch (category) {
+				case "Fitness":
+					today_fitness.updateValue(num_hours);
+					today_other.updateValue(today_other.getValue() - num_hours);
+					break;
+				case "Study":
+					today_study.updateValue(num_hours);
+					today_other.updateValue(today_other.getValue() - num_hours);
+					break;
+				case "Rest":
+					today_rest.updateValue(num_hours);
+					today_other.updateValue(today_other.getValue() - num_hours);
+					break;
+				}
+
+				// show error and revert if this adds up to over 24 hours
+				if (!checkSliceList(today_slices)) {
+					today_slices = previous_slices;
+					JOptionPane.showMessageDialog(frame, "You've entered over 24 hours!");
+				}
+					
+				// go back to today page
 				show_page(0);
 			}
 		});
@@ -248,9 +304,9 @@ public class Window {
 		panel.setLayout(null);
 		
 		// Pie chart
-		PieChart chart = new PieChart(goal_slices, chart_area);
-		chart.setBounds(0, 30, 534, 661);
-		panel.add(chart);
+		goal_chart = new PieChart(goal_slices.toArray(new Slice[0]), chart_area);
+		goal_chart.setBounds(0, 30, 534, 661);
+		panel.add(goal_chart);
 		
 		// Set goals button
 		JLabel set_button = new JLabel("set goals");
@@ -305,6 +361,22 @@ public class Window {
 			if (i != page_to_show)
 				pages[i].setVisible(false);
 		}
+	}
+	
+	/**
+	 * Ensures the slice list does not have over 24 hours in slice values.
+	 * 
+	 * @param slices the slice list to check
+	 * @return true if the list is sound, false if it has over 24 hours
+	 */
+	private boolean checkSliceList(ArrayList<Slice> slices) {
+		int sum = 0;
+		
+		// don't count the "other" slices
+		for (int i = 0; i < slices.size()-1; i++)
+			sum += slices.get(i).getValue();
+		
+		return sum <= 24;
 	}
 }
 
