@@ -30,8 +30,6 @@ public class Window {
 	 */
 	
 	// Pie charts and slices
-	private PieChart today_chart;
-	private PieChart goal_chart;
 	private ArrayList<Slice> today_slices;
 	private ArrayList<Slice> goal_slices;
 	private Slice today_fitness, today_study, today_rest, today_other;
@@ -57,7 +55,7 @@ public class Window {
 	}
 
 	/**
-	 * Create the application.
+	 * Create the application and initialize fields
 	 */
 	public Window() {
 		// Create Image object to import resources
@@ -78,8 +76,8 @@ public class Window {
 		
 		goal_fitness = new Slice(3, fitness_color);
 		goal_study = new Slice(11, study_color);
-		goal_rest = new Slice(9, rest_color);
-		goal_other = new Slice(1, other_color);
+		goal_rest = new Slice(10, rest_color);
+		goal_other = new Slice(0, other_color);
 		
 		today_slices.add(today_fitness);
 		today_slices.add(today_study);
@@ -96,7 +94,7 @@ public class Window {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialize the contents of the frame
 	 */
 	private void initialize() {
 		// Initialize frame for this window
@@ -105,7 +103,7 @@ public class Window {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		// "Today" navigation button TODO
+		// "Today" navigation button
 		JLabel navigate_today = new JLabel("Today");
 		navigate_today.setBackground(Color.GRAY);
 		navigate_today.setOpaque(true);
@@ -131,7 +129,7 @@ public class Window {
 		navigate_goals.setBounds(280, 175, 190, 40);
 		frame.getContentPane().add(navigate_goals);
 		
-		// Initialize all pages of app, and hide all except today page
+		// Initialize all pages of app
 		pages[0] = init_today_page();
 		pages[1] = init_enter_new_slice();
 		pages[2] = init_goals_page();
@@ -141,54 +139,118 @@ public class Window {
 			frame.getContentPane().add(pages[i]);
 		}
 		
+		// Hide all pages except today page
 		show_page(0);
 	}
 	
 	/**
-	 * Initialize the first page of the app, the "today" page
+	 * Creates the "today" page, where the user can see their current pie chart for the day
+	 * 
+	 * @return the today page's panel
 	 */
 	private JPanel init_today_page() {
+		JLabel enter_button = new JLabel("enter a slice");
+		enter_button.setBackground(Color.GRAY);
+		enter_button.setOpaque(true);
+		return init_chart_page(today_slices, enter_button, 1);
+	}
+	
+	/**
+	 * Creates the "goals" page, where the user can see their goal pie chart
+	 * 
+	 * @return the goals page's panel
+	 */
+	private JPanel init_goals_page() {
+		JLabel enter_button = new JLabel("set goals");
+		enter_button.setBackground(Color.GRAY);
+		enter_button.setOpaque(true);
+		return init_chart_page(goal_slices, enter_button, 3);
+	}
+	
+	/**
+	 * Creates a pie chart page (used for today and goals pages)
+	 * 
+	 * @param slices the pie chart slices to display on the chart
+	 * @param chart the pie chart on which to display the slices
+	 * @param button the button at the bottom of the page
+	 * @param button_page the page that clicking button should bring the user to
+	 * @return the created page's panel
+	 */
+	private JPanel init_chart_page(ArrayList<Slice> slices, JLabel button, int button_page) {
+		// Create panel
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 534, 661);
 		panel.setLayout(null);
 		
-		// Enter a slice button
-		JLabel enter_button = new JLabel("enter a slice");
-		enter_button.setBackground(Color.GRAY);
-		enter_button.setOpaque(true);
-		enter_button.addMouseListener(new MouseAdapter() {
+		// Pie chart
+		PieChart chart = new PieChart(slices, chart_area);
+		chart.setBounds(0, 30, 534, 661);
+		panel.add(chart);
+		
+		// Set goals button
+		button.setBackground(Color.GRAY);
+		button.setOpaque(true);
+		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				show_page(1);
+				show_page(button_page);
 			}
 		});
-		enter_button.setBounds(142, 585, 250, 60);
-		panel.add(enter_button);
-		
-		// Pie chart
-		today_chart = new PieChart(today_slices, chart_area);
-		today_chart.setBounds(0, 30, 534, 661);
-		panel.add(today_chart);
-		
+		button.setBounds(142, 585, 250, 60);
+		panel.add(button);
+
 		// Background image
-		JLabel background = new JLabel();
+		JLabel background = new JLabel(image.bg);
 		background.setBounds(0, 0, 550, 700);
-		background.setIcon(image.bg);
 		panel.add(background);
-		
+				
 		return panel;
 	}
 	
 	/**
-	 * Displays the "enter new slice" page, where the user can update their "today" pie chart slices
+	 * Creates the "enter new slice" page, where the user can update their "today" pie chart slices
+	 * 
+	 * @return the enter new slice page's page
 	 */
 	private JPanel init_enter_new_slice() {
+		JLabel title_label = new JLabel(image.enterslice_text);
+		JLabel enter_button = new JLabel("enter");
+		enter_button.setBackground(Color.GRAY);
+		enter_button.setOpaque(true);
+		
+		return init_user_entry(title_label, enter_button, today_slices, 0);
+	}
+	
+	/**
+	 * Creates the "set goals" page, where the user can set their goal percentages
+	 * 
+	 * @return the set goals page's panel
+	 */
+	private JPanel init_set_goals() {
+		JLabel title_label = new JLabel(image.setgoals_text);
+		JLabel enter_button = new JLabel("set goal");
+		enter_button.setBackground(Color.GRAY);
+		enter_button.setOpaque(true);
+		
+		return init_user_entry(title_label, enter_button, goal_slices, 2);		
+	}
+	
+	/**
+	 * Creates a user entry page (used for enter a new slice or set goals pages)
+	 * 
+	 * @param title_label label to go at the top of this page
+	 * @param enter_button button to go at the bottom of this page
+	 * @param slices the pie chart slices to update
+	 * @param prev_page the page to return to after the user is done entering information
+	 * @return the created page's panel
+	 */
+	private JPanel init_user_entry(JLabel title_label, JLabel enter_button, ArrayList<Slice> slices, int prev_page) {
+		// Create panel
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 534, 661);
 		panel.setLayout(null);
 		
-		// Title text: "enter a slice"
-		JLabel title_label = new JLabel(image.enterslice_text);
+		// Title text: "set your goals"
 		title_label.setBounds(105, 270, 324, 50);
 		panel.add(title_label);
 		
@@ -221,11 +283,7 @@ public class Window {
 		panel.add(hours_field);
 		hours_field.setColumns(10);
 		
-		
 		// Enter button - retrieves information from the fields and submits it
-		JLabel enter_button = new JLabel("enter");
-		enter_button.setBackground(Color.GRAY);
-		enter_button.setOpaque(true);
 		enter_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -244,104 +302,49 @@ public class Window {
 				// update pie chart based on value entered
 				switch (category) {
 				case "Fitness":
-					today_fitness.updateValue(num_hours);
-					today_other.updateValue(-num_hours);
+					slices.get(0).updateValue(num_hours);
+					slices.get(slices.size()-1).updateValue(-num_hours);
 					
 					// show error if entered over 24 hours
 					if (!checkSliceList(today_slices)) {
-						today_fitness.updateValue(-num_hours);
-						today_other.updateValue(num_hours);
+						slices.get(0).updateValue(-num_hours);
+						slices.get(slices.size()-1).updateValue(num_hours);
 						JOptionPane.showMessageDialog(frame, "You've entered over 24 hours!");
 					}
 					
 					break;
 				case "Study":
-					today_study.updateValue(num_hours);
-					today_other.updateValue(-num_hours);
+					slices.get(1).updateValue(num_hours);
+					slices.get(slices.size()-1).updateValue(-num_hours);
 					
 					// show error if entered over 24 hours
 					if (!checkSliceList(today_slices)) {
-						today_study.updateValue(-num_hours);
-						today_other.updateValue(num_hours);
+						slices.get(1).updateValue(-num_hours);
+						slices.get(slices.size()-1).updateValue(num_hours);
 						JOptionPane.showMessageDialog(frame, "You've entered over 24 hours!");
 					}
 					
 					break;
 				case "Rest":
-					today_rest.updateValue(num_hours);
-					today_other.updateValue(-num_hours);
+					slices.get(2).updateValue(num_hours);
+					slices.get(slices.size()-1).updateValue(-num_hours);
 					
 					// show error if entered over 24 hours
 					if (!checkSliceList(today_slices)) {
-						today_rest.updateValue(-num_hours);
-						today_other.updateValue(num_hours);
+						slices.get(2).updateValue(-num_hours);
+						slices.get(slices.size()-1).updateValue(num_hours);
 						JOptionPane.showMessageDialog(frame, "You've entered over 24 hours!");
 					}
 					
 					break;
 				}
 					
-				// go back to today page
-				show_page(0);
+				// go back to previous page
+				show_page(prev_page);
 			}
 		});
 		enter_button.setBounds(142, 510, 250, 60);
 		panel.add(enter_button);
-		
-		// Background image
-		JLabel background = new JLabel(image.bg);
-		background.setBounds(0, 0, 550, 700);
-		panel.add(background);
-		
-		return panel;
-	}
-	
-	/**
-	 * Displays the "goals" page, where the user can see their goal pie chart
-	 */
-	private JPanel init_goals_page() {
-		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 534, 661);
-		panel.setLayout(null);
-		
-		// Pie chart
-		goal_chart = new PieChart(goal_slices, chart_area);
-		goal_chart.setBounds(0, 30, 534, 661);
-		panel.add(goal_chart);
-		
-		// Set goals button
-		JLabel set_button = new JLabel("set goals");
-		set_button.setBackground(Color.GRAY);
-		set_button.setOpaque(true);
-		set_button.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				show_page(3);
-			}
-		});
-		set_button.setBounds(142, 585, 250, 60);
-		panel.add(set_button);
-
-		// Background image
-		JLabel background = new JLabel(image.bg);
-		background.setBounds(0, 0, 550, 700);
-		panel.add(background);
-				
-		return panel;
-	}
-	
-	/**
-	 * Displays the "set goals" page, where the user can set their goal percentages
-	 */
-	private JPanel init_set_goals() {
-		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 534, 661);
-		panel.setLayout(null);
-		
-		// Title text: "set your goals"
-		JLabel title_label = new JLabel(image.setgoals_text);
-		title_label.setBounds(105, 230, 324, 50);
-		panel.add(title_label);
 		
 		// Background image
 		JLabel background = new JLabel(image.bg);
@@ -362,8 +365,6 @@ public class Window {
 			if (i != page_to_show)
 				pages[i].setVisible(false);
 		}
-		
-		today_chart = new PieChart(today_slices, chart_area);
 	}
 	
 	/**
