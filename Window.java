@@ -193,14 +193,14 @@ public class Window {
 		JLabel checkin_button = new JLabel("check in");
 		checkin_button.setBackground(Color.GRAY);
 		checkin_button.setOpaque(true);
-		update_button.addMouseListener(new MouseAdapter() {
+		checkin_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				show_page(checkin_page);
 			}
 		});
-		update_button.setBounds(350, 580, 150, 60);
-		panel.add(update_button);
+		checkin_button.setBounds(22, 580, 150, 60);
+		panel.add(checkin_button);
 		
 		// Update chart button
 		update_button.addMouseListener(new MouseAdapter() {
@@ -209,7 +209,7 @@ public class Window {
 				show_page(button_page);
 			}
 		});
-		update_button.setBounds(150, 580, 150, 60);
+		update_button.setBounds(192, 580, 150, 60);
 		panel.add(update_button);
 		
 		// Reset slices button
@@ -227,7 +227,7 @@ public class Window {
 				chart.repaint();
 			}
 		});
-		reset_button.setBounds(350, 580, 150, 60);
+		reset_button.setBounds(362, 580, 150, 60);
 		panel.add(reset_button);
 
 		// Background image
@@ -335,7 +335,7 @@ public class Window {
 				try {
 				    num_hours = Integer.parseInt(str);
 				} catch (NumberFormatException number_format_e) {
-					JOptionPane.showMessageDialog(frame, "Hours must be a number.");
+					JOptionPane.showMessageDialog(frame, "Hours must be a whole number.");
 				}
 				
 				// update pie chart based on value entered
