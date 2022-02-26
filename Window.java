@@ -10,14 +10,26 @@ import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import java.awt.Font;
 
 public class Window {
 
 	private JFrame frame;
 	private Image image;
+	private Rectangle chart_area;
 	
 	// Pages of the app
-	private JPanel today_page, enter_new_slice_page;
+	private JPanel[] pages = new JPanel[4];
+	/* 0: today
+	 * 1: enter new slice
+	 * 2: goals
+	 * 3: set goals
+	 */
+	
+	// Pie charts
+	private Slice[] today_slices = {new Slice(10, Color.BLUE), new Slice(20, Color.RED), new Slice(30, Color.PINK)};
+	private Slice[] goal_slices = {new Slice(20, Color.BLUE), new Slice(30, Color.RED), new Slice(10, Color.PINK)};
 
 	/**
 	 * Launch the application.
@@ -41,6 +53,11 @@ public class Window {
 	public Window() {
 		// Create Image object to import resources
 		image = new Image();
+		
+		// Set area for pie chart to be in
+		chart_area = new Rectangle(100,200,340,340);
+		
+		// Initialize GUI
 		initialize();
 	}
 
@@ -52,25 +69,42 @@ public class Window {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 550, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		// Initial pie chart
-		Slice[] slices = {new Slice(10, Color.BLUE), new Slice(20, Color.RED), new Slice(30, Color.PINK)};
 		frame.getContentPane().setLayout(null);
+
+		// "Today" navigation button TODO
+		JLabel navigate_today = new JLabel("Today");
+		navigate_today.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				show_page(0);
+			}
+		});
+		navigate_today.setBounds(70, 140, 190, 50);
+		frame.getContentPane().add(navigate_today);
 		
-		PieChart chart = new PieChart(slices, new Rectangle(100,200,340,340));
-		chart.setBounds(0, 21, 534, 661);
-		
-		frame.getContentPane().add(chart);
+		// "Goals" navigation button
+		JLabel navigate_goals = new JLabel("Goals");
+		navigate_goals.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				show_page(2);
+			}
+		});
+		navigate_goals.setBounds(280, 140, 190, 50);
+		frame.getContentPane().add(navigate_goals);
 		
 		// Initialize all pages of app, and hide all except today page
-		today_page = init_today_page();
-		enter_new_slice_page = init_enter_new_slice();
-		frame.getContentPane().add(today_page);
-		frame.getContentPane().add(enter_new_slice_page);
-		enter_new_slice_page.setVisible(false);
+		pages[0] = init_today_page();
+		pages[1] = init_enter_new_slice();
+		pages[2] = init_goals_page();
+		pages[3] = init_set_goals();
 		
+		for (int i = 0; i < 4; i++) {
+			frame.getContentPane().add(pages[i]);
+		}
 		
-		// TODO mouse listeners will toggle visibility of various panels
+		pages[1].setVisible(false);
+				
 	}
 	
 	/**
@@ -81,13 +115,17 @@ public class Window {
 		panel.setBounds(0, 0, 534, 661);
 		panel.setLayout(null);
 		
+		// Pie chart
+		PieChart chart = new PieChart(today_slices, chart_area);
+		chart.setBounds(0, 21, 534, 661);
+		panel.add(chart);
+		
 		// Enter a slice button
 		JLabel enter_button = new JLabel("enter a slice");
 		enter_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				today_page.setVisible(false);
-				enter_new_slice_page.setVisible(true);
+				show_page(1);
 			}
 		});
 		enter_button.setBounds(264, 574, 250, 60);
@@ -110,10 +148,88 @@ public class Window {
 		panel.setBounds(0, 0, 534, 661);
 		panel.setLayout(null);
 		
-		JLabel enter_button = new JLabel("hola");
-		enter_button.setBounds(264, 574, 250, 60);
-		panel.add(enter_button);
+		JLabel title_label = new JLabel("enter a slice");
+		title_label.setFont(new Font("Montserrat Light", Font.PLAIN, 46));
+		title_label.setHorizontalAlignment(SwingConstants.CENTER);
+		title_label.setBounds(105, 200, 324, 49);
+		panel.add(title_label);
+		
+		// Background image
+		JLabel background = new JLabel();
+		background.setBounds(0, 0, 550, 700);
+		background.setIcon(image.bg);
+		panel.add(background);
+		
 		return panel;
+	}
+	
+	/**
+	 * Displays the "goals" page, where the user can see their goal pie chart
+	 */
+	private JPanel init_goals_page() {
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 0, 534, 661);
+		panel.setLayout(null);
+		
+		// Pie chart
+		PieChart chart = new PieChart(goal_slices, chart_area);
+		chart.setBounds(0, 21, 534, 661);
+		panel.add(chart);
+		
+		// Set goals button
+		JLabel set_button = new JLabel("set goals");
+		set_button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				show_page(3);
+			}
+		});
+		set_button.setBounds(264, 574, 250, 60);
+		panel.add(set_button);
+
+		// Background image
+		JLabel background = new JLabel();
+		background.setBounds(0, 0, 550, 700);
+		background.setIcon(image.bg);
+		panel.add(background);
+				
+		return panel;
+	}
+	
+	/**
+	 * Displays the "set goals" page, where the user can set their goal percentages
+	 */
+	private JPanel init_set_goals() {
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 0, 534, 661);
+		panel.setLayout(null);
+		
+		JLabel title_label = new JLabel("set your goals");
+		title_label.setFont(new Font("Montserrat Light", Font.PLAIN, 46));
+		title_label.setHorizontalAlignment(SwingConstants.CENTER);
+		title_label.setBounds(105, 200, 324, 49);
+		panel.add(title_label);
+		
+		// Background image
+		JLabel background = new JLabel();
+		background.setBounds(0, 0, 550, 700);
+		background.setIcon(image.bg);
+		panel.add(background);
+		
+		return panel;
+	}
+	
+	/**
+	 * Show the given page and hide all other pages
+	 * 
+	 * @param page_to_show the index of the page that should be shown
+	 */
+	private void show_page(int page_to_show) {
+		pages[page_to_show].setVisible(true);
+		for (int i = 0; i < 4; i++) {
+			if (i != page_to_show)
+				pages[i].setVisible(false);
+		}
 	}
 }
 
