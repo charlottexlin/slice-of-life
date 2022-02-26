@@ -85,6 +85,16 @@ class Slice {
 	}
 	
 	/**
+	 * Set the value of this slice.
+	 * 
+	 * @param value number to set this slice's value to
+	 */
+	public void setValue(double value) {
+		this.value = value;
+	}
+	
+	
+	/**
 	 * Return the value of this slice.
 	 * 
 	 * @return value of this slice
