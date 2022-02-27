@@ -10,8 +10,9 @@ with your daily slices, and see how they compare to your goals. This app can hel
 manage their time better and make sure they fit in all the important things they should do
 each day to maintain good health.
 
-There's still a lot I would've liked to add to Slice of Life, but I did it all in a day, so
-I'm pretty proud of it anyway :)
+All the code and artwork is done by me. I used Java, Swing library for GUI, Eclipse IDE, and
+Procreate. There's still a lot I would've liked to add to Slice of Life, but I did it all in
+a day, so I'm pretty proud of it :)
 
 Find this project and others on my DevPost: https://devpost.com/cxl229
 
