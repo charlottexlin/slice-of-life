@@ -43,7 +43,7 @@ public class Window {
 	// Slice colors
 	private Color fitness_color = new Color(176,170,204), study_color = new Color(94,104,69), work_color = new Color(163,189,219),
 			sleep_color = new Color(159,168,136), selfcare_color = new Color(205,170,176), hobbies_color = new Color(235,186,147),
-			social_color = new Color(235,222,146), chores_color = new Color(181,224,206), other_color_1 = new Color(205,200,194), other_color_2 = new Color(138,125,112);
+			social_color = new Color(235,222,146), chores_color = new Color(181,224,206), other_color_1 = new Color(187,180,175), other_color_2 = new Color(138,125,112);
 	
 	// Some text
 	private JLabel deviations_text, rec_text, goal_checkin_text;
@@ -158,7 +158,11 @@ public class Window {
 		// enter a slice button
 		JLabel enter_button = new JLabel(image.enter_button_img);
 		
-		return init_chart_page(today_slices, enter_button, 4, 1);
+		// cat image
+		JLabel cat = new JLabel(image.cat);
+		cat.setBounds(10, 445, 105, 130);
+		
+		return init_chart_page(today_slices, enter_button, cat, 4, 1);
 	}
 	
 	/**
@@ -170,7 +174,11 @@ public class Window {
 		// set goals button
 		JLabel enter_button = new JLabel(image.set_goals_button_img);
 		
-		return init_chart_page(goal_slices, enter_button, 5, 3);
+		// snail image
+		JLabel snail = new JLabel(image.snail);
+		snail.setBounds(427, 435, 105, 130);
+		
+		return init_chart_page(goal_slices, enter_button, snail, 5, 3);
 	}
 	
 	/**
@@ -179,11 +187,12 @@ public class Window {
 	 * @param slices the pie chart slices to display on the chart
 	 * @param chart the pie chart on which to display the slices
 	 * @param update_button the button at the bottom of the page
+	 * @param cartoon cartoon image for this page
 	 * @param checkin_page the index of page that clicking the check-in button should bring the user to
 	 * @param button_page the index of page that clicking the update button should bring the user to
 	 * @return the created page's panel
 	 */
-	private JPanel init_chart_page(ArrayList<Slice> slices, JLabel update_button, int checkin_page, int button_page) {
+	private JPanel init_chart_page(ArrayList<Slice> slices, JLabel update_button, JLabel cartoon, int checkin_page, int button_page) {
 		// Create panel
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 534, 661);
@@ -235,6 +244,14 @@ public class Window {
 		});
 		reset_button.setBounds(362, 580, 150, 60);
 		panel.add(reset_button);
+		
+		// Cartoon image
+		panel.add(cartoon);
+		
+		// Color legend
+		JLabel legend = new JLabel(image.legend_img);
+		legend.setBounds(430, 241, 92, 135);
+		panel.add(legend);
 
 		// Background image
 		JLabel background = new JLabel(image.bg);

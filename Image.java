@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
  */
 
 public class Image {
-	ImageIcon bg = new ImageIcon(getClass().getResource("/resources/bg.png"));
+	ImageIcon bg = new ImageIcon(getClass().getResource("/resources/bg.gif"));
 	ImageIcon setgoals_text = new ImageIcon(getClass().getResource("/resources/setgoals.png"));
 	ImageIcon enterslice_text = new ImageIcon(getClass().getResource("/resources/enterslice.png"));
 	ImageIcon category_text = new ImageIcon(getClass().getResource("/resources/category.png"));
@@ -21,4 +21,7 @@ public class Image {
 	ImageIcon today_button = new ImageIcon(getClass().getResource("/resources/todaybutton.png"));
 	ImageIcon goals_button = new ImageIcon(getClass().getResource("/resources/goalsbutton.png"));
 	ImageIcon back_button_img = new ImageIcon(getClass().getResource("/resources/backbutton.png"));
+	ImageIcon legend_img = new ImageIcon(getClass().getResource("/resources/legend.png"));
+	ImageIcon cat = new ImageIcon(getClass().getResource("/resources/cat.gif"));
+	ImageIcon snail = new ImageIcon(getClass().getResource("/resources/snail.gif"));
 }
