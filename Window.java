@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -44,7 +45,7 @@ public class Window {
 			hobbies_color = Color.ORANGE, social_color = Color.YELLOW, chores_color = Color.CYAN, other_color_1 = Color.WHITE, other_color_2 = Color.LIGHT_GRAY;
 	
 	// Some text
-	private JLabel goal_checkin_text;
+	private JLabel deviations_text, rec_text, goal_checkin_text;
 
 	/**
 	 * Launch the application.
@@ -200,6 +201,7 @@ public class Window {
 		checkin_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				set_today_checkin_text();
 				set_goal_checkin_text();
 				show_page(checkin_page);
 			}
@@ -392,19 +394,27 @@ public class Window {
 		
 		// Title text: "let's check in..."
 		JLabel title_label = new JLabel(image.letscheckin_text);
-		title_label.setBounds(105, 250, 324, 50);
+		title_label.setBounds(105, 270, 324, 50);
 		panel.add(title_label);
 
 		// Text
 		JLabel text = new JLabel("Your slices today compared to your goals:");
-		text.setBounds(40, 270, 450, 90);
+		text.setBounds(40, 300, 450, 90);
 		text.setFont(new Font("Montserrat Medium", Font.PLAIN, 20));
 		text.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(text);
 		
-		// TODO add more text labels, that feature your top 3 deviations
+		deviations_text = new JLabel("", SwingConstants.CENTER);
+		deviations_text.setBounds(40, 360, 450, 120);
+		deviations_text.setFont(new Font("Montserrat Light", Font.PLAIN, 24));
+		panel.add(deviations_text);
 		
-		// TODO add another label with a motivating recommendation
+		rec_text = new JLabel("", SwingConstants.CENTER);
+		rec_text.setBounds(40, 445, 450, 120);
+		rec_text.setFont(new Font("Montserrat Medium", Font.PLAIN, 20));
+		panel.add(rec_text);
+		
+		set_today_checkin_text();
 		
 		// Back button
 		JLabel back_button = new JLabel("Back");
@@ -415,7 +425,7 @@ public class Window {
 				show_page(0);
 			}
 		});
-		back_button.setBounds(192, 580, 150, 60);
+		back_button.setBounds(192, 550, 150, 60);
 		panel.add(back_button);
 
 		// Background image
@@ -424,6 +434,62 @@ public class Window {
 		panel.add(background);
 		
 		return panel;
+	}
+	
+	/**
+	 * Set text on today check-in page
+	 */
+	private void set_today_checkin_text() {
+		// your top 3 deviations
+		ArrayList<ArrayList<Integer>> values = new ArrayList<ArrayList<Integer>>();
+		
+		// get differences between today and goal slices for all categories (except other)
+		for (int i = 0; i < today_slices.size()-1; i++) {
+			ArrayList<Integer> temp = new ArrayList<Integer>();
+			temp.add((int)(today_slices.get(i).getValue() - goal_slices.get(i).getValue()));
+			temp.add(i);
+			values.add(temp);
+		}
+		
+		// find 3 greatest differences
+		values.sort((x, y) -> Integer.compare(Math.abs(x.get(0)), Math.abs(y.get(0))));
+		Collections.reverse(values);
+		int val1 = values.get(0).get(0);
+		int val2 = values.get(1).get(0);
+		int val3 = values.get(2).get(0);
+		
+		// change values to positives
+		String s1 = (val1 < 0) ? "less" : "more";
+		String s2 = (val2 < 0) ? "less" : "more";
+		String s3 = (val3 < 0) ? "less" : "more";
+		
+		val1 = (val1 < 0) ? -val1 : val1;
+		val2 = (val2 < 0) ? -val2 : val2;
+		val3 = (val3 < 0) ? -val3 : val3;
+		
+		// get 3 categories
+		String c1 = getCategory(values.get(0).get(1));
+		String c2 = getCategory(values.get(1).get(1));
+		String c3 = getCategory(values.get(2).get(1));
+		
+		// update deviations text
+		if (today_other.getValue() == 24) {
+			deviations_text.setText("<html><div style='text-align: center;'>Start your day off strong by<br/>entering some time slices.<html>");
+			// update recommendations text
+			rec_text.setText("<html><div style='text-align: center;'>You got this!<html>");
+		}
+		else if (val1 == 0 && val2 == 0 && val3 == 0) {
+			deviations_text.setText("<html><div style='text-align: center;'>You're right on track<br/>with your goals so far!<html>");
+			// update recommendations text
+			rec_text.setText("<html><div style='text-align: center;'>Keep up the great work.<html>");
+		} else {
+			deviations_text.setText("<html>1. " + c1 + ": " + val1 + " hrs " + s1 + " than goal<br/>2. " + c2 + ": " + val2 + " hrs " + s2 + " than goal<br/>3. " + c3 + ": " + val3 + " hrs " + s3 + " than goal<html>");
+			// update recommendations text
+			if (s1.equals("less"))
+				rec_text.setText("<html><div style='text-align: center;'>Try to spend a bit more time on " + c1 + " today to reach your goal. You can do it!<html>");
+			else
+				rec_text.setText("<html><div style='text-align: center;'>You may have spent more time than expected today on " + c1 + ". It's okay, there's always tomorrow!<html>");
+		}
 	}
 	
 	/**
@@ -471,6 +537,9 @@ public class Window {
 		return panel;
 	}
 	
+	/**
+	 * Set text on goal check-in page
+	 */
 	private void set_goal_checkin_text() {
 		// haven't filled in 24 hours yet
 		if (goal_slices.get(goal_slices.size()-1).getValue() > 0) {
