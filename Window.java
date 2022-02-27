@@ -569,7 +569,7 @@ public class Window {
 		} else {
 			// too much or too little
 			String str = "";
-			for (int i = 0; i < goal_slices.size(); i++) {
+			for (int i = 0; i < goal_slices.size()-1; i++) {
 				if (goal_slices.get(i).getValue() >= 12) {
 					String category = getCategory(i);
 					str = "<html><div style='text-align: center;'>You have a lot of time budgeted for " + category + ". Try making time for other things!<html>";
