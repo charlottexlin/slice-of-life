@@ -20,4 +20,5 @@ public class Image {
 	ImageIcon reset_button_img = new ImageIcon(getClass().getResource("/resources/resetbutton.png"));
 	ImageIcon today_button = new ImageIcon(getClass().getResource("/resources/todaybutton.png"));
 	ImageIcon goals_button = new ImageIcon(getClass().getResource("/resources/goalsbutton.png"));
+	ImageIcon back_button_img = new ImageIcon(getClass().getResource("/resources/backbutton.png"));
 }

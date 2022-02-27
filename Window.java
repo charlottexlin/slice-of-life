@@ -41,8 +41,9 @@ public class Window {
 	private Slice goal_fitness, goal_study, goal_work, goal_sleep, goal_selfcare, goal_hobbies, goal_social, goal_chores, goal_other;
 	
 	// Slice colors
-	private Color fitness_color = Color.BLUE, study_color = Color.GREEN, work_color = Color.RED, sleep_color = Color.PINK, selfcare_color = Color.GRAY,
-			hobbies_color = Color.ORANGE, social_color = Color.YELLOW, chores_color = Color.CYAN, other_color_1 = Color.WHITE, other_color_2 = Color.LIGHT_GRAY;
+	private Color fitness_color = new Color(176,170,204), study_color = new Color(94,104,69), work_color = new Color(163,189,219),
+			sleep_color = new Color(159,168,136), selfcare_color = new Color(205,170,176), hobbies_color = new Color(235,186,147),
+			social_color = new Color(235,222,146), chores_color = new Color(181,224,206), other_color_1 = new Color(205,200,194), other_color_2 = new Color(138,125,112);
 	
 	// Some text
 	private JLabel deviations_text, rec_text, goal_checkin_text;
@@ -417,8 +418,7 @@ public class Window {
 		set_today_checkin_text();
 		
 		// Back button
-		JLabel back_button = new JLabel("Back");
-		back_button.setOpaque(true);
+		JLabel back_button = new JLabel(image.back_button_img);
 		back_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -518,8 +518,7 @@ public class Window {
 		panel.add(goal_checkin_text);
 		
 		// Back button
-		JLabel back_button = new JLabel("Back");
-		back_button.setOpaque(true);
+		JLabel back_button = new JLabel(image.back_button_img);
 		back_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
