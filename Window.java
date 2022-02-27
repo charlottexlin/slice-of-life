@@ -18,6 +18,12 @@ import javax.swing.JComboBox;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 
+/**
+ * GUI window and main class.
+ * 
+ * @author Charlotte Lin
+ */
+
 public class Window {
 
 	private JFrame frame;
