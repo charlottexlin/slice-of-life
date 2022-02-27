@@ -5,6 +5,8 @@ import javax.swing.ImageIcon;
 /**
  * This class imports all the image resources used in the app.
  * It exists for organization of code.
+ *
+ * @author Charlotte Lin
  */
 
 public class Image {
