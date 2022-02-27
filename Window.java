@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class Window {
 
@@ -22,11 +24,13 @@ public class Window {
 	private Rectangle chart_area;
 	
 	// Pages of the app
-	private JPanel[] pages = new JPanel[4];
+	private JPanel[] pages = new JPanel[6];
 	/* 0: today
 	 * 1: enter new slice
 	 * 2: goals
 	 * 3: set goals
+	 * 4: today check-in
+	 * 5: goals check-in
 	 */
 	
 	// Pie charts and slices
@@ -38,6 +42,9 @@ public class Window {
 	// Slice colors
 	private Color fitness_color = Color.BLUE, study_color = Color.GREEN, work_color = Color.RED, sleep_color = Color.PINK, selfcare_color = Color.GRAY,
 			hobbies_color = Color.ORANGE, social_color = Color.YELLOW, chores_color = Color.CYAN, other_color_1 = Color.WHITE, other_color_2 = Color.LIGHT_GRAY;
+	
+	// Some text
+	private JLabel goal_checkin_text;
 
 	/**
 	 * Launch the application.
@@ -129,8 +136,10 @@ public class Window {
 		pages[1] = init_enter_new_slice();
 		pages[2] = init_goals_page();
 		pages[3] = init_set_goals();
+		pages[4] = init_today_checkin();
+		pages[5] = init_goals_checkin();
 		
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < pages.length; i++) {
 			frame.getContentPane().add(pages[i]);
 		}
 		
@@ -147,7 +156,7 @@ public class Window {
 		// enter a slice button
 		JLabel enter_button = new JLabel(image.enter_button_img);
 		
-		return init_chart_page(today_slices, enter_button, 1, 1);
+		return init_chart_page(today_slices, enter_button, 4, 1);
 	}
 	
 	/**
@@ -159,7 +168,7 @@ public class Window {
 		// set goals button
 		JLabel enter_button = new JLabel(image.set_goals_button_img);
 		
-		return init_chart_page(goal_slices, enter_button, 3, 3);
+		return init_chart_page(goal_slices, enter_button, 5, 3);
 	}
 	
 	/**
@@ -167,8 +176,9 @@ public class Window {
 	 * 
 	 * @param slices the pie chart slices to display on the chart
 	 * @param chart the pie chart on which to display the slices
-	 * @param button the button at the bottom of the page
-	 * @param button_page the page that clicking button should bring the user to
+	 * @param update_button the button at the bottom of the page
+	 * @param checkin_page the index of page that clicking the check-in button should bring the user to
+	 * @param button_page the index of page that clicking the update button should bring the user to
 	 * @return the created page's panel
 	 */
 	private JPanel init_chart_page(ArrayList<Slice> slices, JLabel update_button, int checkin_page, int button_page) {
@@ -190,6 +200,7 @@ public class Window {
 		checkin_button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				set_goal_checkin_text();
 				show_page(checkin_page);
 			}
 		});
@@ -366,6 +377,147 @@ public class Window {
 	}
 	
 	/**
+	 * Creates the today check-in page, where the user can see how their current day compares to their goals
+	 * 
+	 * @return the today check-in page's panel
+	 */
+	private JPanel init_today_checkin() {
+		// Create panel
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 0, 534, 661);
+		panel.setLayout(null);
+		
+		// Navigation buttons
+		addNavigationButtons(panel);
+		
+		// Title text: "let's check in..."
+		JLabel title_label = new JLabel(image.letscheckin_text);
+		title_label.setBounds(105, 250, 324, 50);
+		panel.add(title_label);
+
+		// Text
+		JLabel text = new JLabel("Your slices today compared to your goals:");
+		text.setBounds(40, 270, 450, 90);
+		text.setFont(new Font("Montserrat Medium", Font.PLAIN, 20));
+		text.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(text);
+		
+		// TODO add more text labels, that feature your top 3 deviations
+		
+		// TODO add another label with a motivating recommendation
+		
+		// Back button
+		JLabel back_button = new JLabel("Back");
+		back_button.setOpaque(true);
+		back_button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				show_page(0);
+			}
+		});
+		back_button.setBounds(192, 580, 150, 60);
+		panel.add(back_button);
+
+		// Background image
+		JLabel background = new JLabel(image.bg);
+		background.setBounds(0, 0, 550, 700);
+		panel.add(background);
+		
+		return panel;
+	}
+	
+	/**
+	 * Creates the goals check-in page, where the user can see how balanced their goals are
+	 * 
+	 * @return the goals check-in page's panel
+	 */
+	private JPanel init_goals_checkin() {
+		// Create panel
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 0, 534, 661);
+		panel.setLayout(null);
+		
+		// Navigation buttons
+		addNavigationButtons(panel);
+		
+		// Title text: "let's check in..."
+		JLabel title_label = new JLabel(image.letscheckin_text);
+		title_label.setBounds(105, 280, 324, 50);
+		panel.add(title_label);
+		
+		// Text: gives a recommendation for your goals
+		goal_checkin_text = new JLabel("", SwingConstants.CENTER);
+		goal_checkin_text.setBounds(70, 330, 400, 200);
+		goal_checkin_text.setFont(new Font("Montserrat", Font.PLAIN, 28));
+		panel.add(goal_checkin_text);
+		
+		// Back button
+		JLabel back_button = new JLabel("Back");
+		back_button.setOpaque(true);
+		back_button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				show_page(2);
+			}
+		});
+		back_button.setBounds(192, 530, 150, 60);
+		panel.add(back_button);
+
+		// Background image
+		JLabel background = new JLabel(image.bg);
+		background.setBounds(0, 0, 550, 700);
+		panel.add(background);
+		
+		return panel;
+	}
+	
+	private void set_goal_checkin_text() {
+		// haven't filled in 24 hours yet
+		if (goal_slices.get(goal_slices.size()-1).getValue() > 0) {
+			goal_checkin_text.setText("<html><div style='text-align: center;'>You haven't finished filling in your daily goals yet. Keep planning your ideal balance!<html>");
+		} else {
+			// too much or too little
+			String str = "";
+			for (int i = 0; i < goal_slices.size(); i++) {
+				if (goal_slices.get(i).getValue() >= 12) {
+					String category = getCategory(i);
+					str = "<html><div style='text-align: center;'>You have a lot of time budgeted for " + category + ". Try making time for other things!<html>";
+					break;
+				} else if (goal_slices.get(i).getValue() < 1) {
+					String category = getCategory(i);
+					str = "<html><div style='text-align: center;'>You should try to budget some time for " + category +". Start with an hour!<html>";
+					break;
+				} else {
+					// balanced goals
+					str = "<html><div style='text-align: center;'>Looking good! Keep working to achieve a healthy balance in your life.<html>";
+				}
+			}
+			goal_checkin_text.setText(str);
+		}	
+	}
+	
+	/**
+	 * Returns the category based on the index in a slices list
+	 * Helper function for initializing check-in pages
+	 * 
+	 * @param i index of the desired category in the slices list
+	 * @return string name of that category
+	 */
+	private String getCategory(int i) {
+		switch (i) {
+		case 0: return "fitness";
+		case 1: return "study";
+		case 2: return "work";
+		case 3: return "sleep";
+		case 4: return "self care";
+		case 5: return "hobbies";
+		case 6: return "social";
+		case 7: return "chores";
+		default: return "other";
+		}
+	}
+	
+	/**
 	 * Adds the navigation buttons "today" and "goals" to the provided panel
 	 * These buttons allow the user to go to different pages of the app
 	 * 
@@ -421,7 +573,7 @@ public class Window {
 	 */
 	private void show_page(int page_to_show) {
 		pages[page_to_show].setVisible(true);
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < pages.length; i++) {
 			if (i != page_to_show)
 				pages[i].setVisible(false);
 		}
