@@ -1,4 +1,4 @@
-# slice of life
+# Slice of Life 🌱
 Welcome to Slice of Life! This is my submission for the health track of NYUHacks 2022.
 Slice of Life is a time slice tracking desktop app, designed to inspire a healthier lifestyle.
 Users can navigate between the "today" page and the "goals" page. On the "goals" page, you can
@@ -14,7 +14,7 @@ All the code and artwork is done by me. I used Java, Swing library for GUI, Ecli
 Procreate. There's still a lot I would've liked to add to Slice of Life, but I did it all in
 a day, so I'm pretty proud of it :)
 
-# instructions to download
+# Instructions to download
 You can try it out for yourself by downloading the file called "Slice of Life.jar" from this
 repository. You do not need to download any of the other files to run the program. You may
 have to change some settings on your computer to allow it to run, depending on your OS.
