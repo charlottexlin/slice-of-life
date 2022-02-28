@@ -1,4 +1,4 @@
-# slice-of-life
+# slice of life
 Welcome to Slice of Life! This is my submission for the health track of NYUHacks 2022.
 Slice of Life is a time slice tracking desktop app, designed to inspire a healthier lifestyle.
 Users can navigate between the "today" page and the "goals" page. On the "goals" page, you can
